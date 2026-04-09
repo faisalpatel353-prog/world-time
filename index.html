@@ -1,54 +1,40 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>World Time Compare</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-body{font-family:Arial;text-align:center;padding:20px;background:#f5f5f5}
-.box{background:white;padding:20px;border-radius:10px;max-width:400px;margin:auto}
-select{padding:10px;width:100%;margin:10px 0}
-.time{font-size:22px;margin:10px 0}
-</style>
-</head>
-
-<body>
-
-<div class="box">
-<h2>World Time Compare</h2>
-
-<label>Compare with India</label>
 <select id="country">
 <option value="America/New_York">USA (New York)</option>
+<option value="America/Los_Angeles">USA (California)</option>
+<option value="America/Chicago">USA (Chicago)</option>
 <option value="Europe/London">UK (London)</option>
-<option value="Asia/Dubai">Dubai</option>
+<option value="Europe/Paris">France (Paris)</option>
+<option value="Europe/Berlin">Germany (Berlin)</option>
+<option value="Europe/Moscow">Russia (Moscow)</option>
+<option value="Asia/Dubai">UAE (Dubai)</option>
+<option value="Asia/Riyadh">Saudi Arabia</option>
+<option value="Asia/Karachi">Pakistan</option>
+<option value="Asia/Dhaka">Bangladesh</option>
+<option value="Asia/Kathmandu">Nepal</option>
+<option value="Asia/Colombo">Sri Lanka</option>
+<option value="Asia/Singapore">Singapore</option>
+<option value="Asia/Kuala_Lumpur">Malaysia</option>
+<option value="Asia/Bangkok">Thailand</option>
+<option value="Asia/Jakarta">Indonesia</option>
 <option value="Asia/Tokyo">Japan</option>
+<option value="Asia/Seoul">South Korea</option>
+<option value="Asia/Shanghai">China</option>
+<option value="Asia/Hong_Kong">Hong Kong</option>
 <option value="Australia/Sydney">Australia</option>
+<option value="Australia/Melbourne">Australia Melbourne</option>
+<option value="Pacific/Auckland">New Zealand</option>
+<option value="Africa/Cairo">Egypt</option>
+<option value="Africa/Nairobi">Kenya</option>
+<option value="Africa/Johannesburg">South Africa</option>
+<option value="Europe/Rome">Italy</option>
+<option value="Europe/Madrid">Spain</option>
+<option value="Europe/Amsterdam">Netherlands</option>
+<option value="Europe/Zurich">Switzerland</option>
+<option value="Europe/Istanbul">Turkey</option>
+<option value="America/Toronto">Canada</option>
+<option value="America/Vancouver">Canada Vancouver</option>
+<option value="America/Sao_Paulo">Brazil</option>
+<option value="America/Mexico_City">Mexico</option>
+<option value="America/Buenos_Aires">Argentina</option>
+<option value="Pacific/Honolulu">Hawaii</option>
 </select>
-
-<div class="time" id="india"></div>
-<div class="time" id="other"></div>
-<div class="time" id="diff"></div>
-
-</div>
-
-<script>
-function update(){
-let india=new Date().toLocaleString("en-US",{timeZone:"Asia/Kolkata"})
-let country=document.getElementById("country").value
-let other=new Date().toLocaleString("en-US",{timeZone:country})
-
-document.getElementById("india").innerHTML="India: "+india
-document.getElementById("other").innerHTML="Other: "+other
-
-let i=new Date(india)
-let o=new Date(other)
-
-let diff=(o-i)/3600000
-document.getElementById("diff").innerHTML="Difference: "+diff.toFixed(1)+" hours"
-}
-
-setInterval(update,1000)
-</script>
-
-</body>
-</html>
