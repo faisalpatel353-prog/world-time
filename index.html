@@ -99,9 +99,19 @@ let o = new Date(other)
 
 let diff = (o - i) / 3600000
 
-document.getElementById("diff").innerHTML =
-"Difference: " + diff.toFixed(1) + " hours"
+let text = ""
 
+if(diff > 0){
+text = diff.toFixed(1) + " hours ahead of India"
+}
+else if(diff < 0){
+text = Math.abs(diff).toFixed(1) + " hours behind India"
+}
+else{
+text = "Same time as India"
+}
+
+document.getElementById("diff").innerHTML = text
 }
 
 setInterval(update,1000)
