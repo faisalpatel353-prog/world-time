@@ -8,45 +8,59 @@
 body{
 margin:0;
 font-family:Arial;
-background:linear-gradient(to right,#eef2f3,#dfe9f3);
-text-align:center;
-padding:20px;
+background: url('https://images.unsplash.com/photo-1502920917128-1aa500764cbd') no-repeat center center/cover;
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+.overlay{
+background:rgba(0,0,0,0.6);
+position:absolute;
+width:100%;
+height:100%;
+top:0;
+left:0;
 }
 
 .box{
-background:white;
+position:relative;
+z-index:2;
+background:rgba(255,255,255,0.1);
+backdrop-filter:blur(15px);
 padding:25px;
-border-radius:12px;
-max-width:400px;
-margin:auto;
-box-shadow:0 5px 20px rgba(0,0,0,0.1);
+border-radius:15px;
+width:350px;
+color:white;
+text-align:center;
+box-shadow:0 10px 30px rgba(0,0,0,0.5);
 }
 
 h2{
-color:#333;
+margin-bottom:10px;
 }
 
 select,input{
-padding:12px;
+padding:10px;
 width:100%;
-margin:10px 0;
-border:1px solid #ccc;
-border-radius:8px;
-font-size:14px;
+margin:8px 0;
+border:none;
+border-radius:6px;
 }
 
 .time{
-font-size:16px;
-margin:10px 0;
-padding:10px;
-background:#f5f7fa;
-border-radius:8px;
-color:#333;
+margin:8px 0;
+padding:8px;
+background:rgba(255,255,255,0.2);
+border-radius:6px;
 }
 </style>
 </head>
 
 <body>
+
+<div class="overlay"></div>
 
 <div class="box">
 <h2>🌍 World Time Compare</h2>
@@ -54,12 +68,50 @@ color:#333;
 <input type="text" id="search" placeholder="Search country..." onkeyup="filterCountry()">
 
 <select id="country">
-<option value="America/New_York">USA</option>
+
+<option value="America/New_York">USA (New York)</option>
+<option value="America/Los_Angeles">USA (California)</option>
 <option value="Europe/London">UK</option>
+<option value="Europe/Paris">France</option>
+<option value="Europe/Berlin">Germany</option>
+<option value="Europe/Madrid">Spain</option>
+<option value="Europe/Rome">Italy</option>
+<option value="Asia/Kolkata">India</option>
 <option value="Asia/Dubai">Dubai</option>
 <option value="Asia/Karachi">Pakistan</option>
+<option value="Asia/Dhaka">Bangladesh</option>
+<option value="Asia/Singapore">Singapore</option>
 <option value="Asia/Tokyo">Japan</option>
+<option value="Asia/Shanghai">China</option>
+<option value="Asia/Seoul">South Korea</option>
+<option value="Asia/Bangkok">Thailand</option>
+<option value="Asia/Jakarta">Indonesia</option>
+<option value="Asia/Manila">Philippines</option>
+<option value="Asia/Kuala_Lumpur">Malaysia</option>
+<option value="Asia/Colombo">Sri Lanka</option>
+<option value="Asia/Kathmandu">Nepal</option>
+<option value="Europe/Moscow">Russia</option>
+<option value="Europe/Istanbul">Turkey</option>
+<option value="Europe/Amsterdam">Netherlands</option>
+<option value="Europe/Zurich">Switzerland</option>
+<option value="Europe/Stockholm">Sweden</option>
+<option value="Europe/Oslo">Norway</option>
+<option value="Europe/Helsinki">Finland</option>
+<option value="Europe/Athens">Greece</option>
+<option value="Africa/Cairo">Egypt</option>
+<option value="Africa/Johannesburg">South Africa</option>
+<option value="Africa/Nairobi">Kenya</option>
+<option value="America/Toronto">Canada</option>
+<option value="America/Vancouver">Canada Vancouver</option>
+<option value="America/Mexico_City">Mexico</option>
+<option value="America/Sao_Paulo">Brazil</option>
+<option value="America/Buenos_Aires">Argentina</option>
 <option value="Australia/Sydney">Australia</option>
+<option value="Australia/Melbourne">Australia Melbourne</option>
+<option value="Pacific/Auckland">New Zealand</option>
+
+<!-- aur add kar sakte ho future me easily -->
+
 </select>
 
 <div class="time" id="your"></div>
@@ -87,13 +139,13 @@ let diff = (o - y) / 3600000
 let text = ""
 
 if(diff > 0){
-text = diff.toFixed(1) + " hours ahead of you"
+text = "⏩ " + diff.toFixed(1) + " hours ahead of you"
 }
 else if(diff < 0){
-text = Math.abs(diff).toFixed(1) + " hours behind you"
+text = "⏪ " + Math.abs(diff).toFixed(1) + " hours behind you"
 }
 else{
-text = "Same time"
+text = "⏺ Same time"
 }
 
 document.getElementById("diff").innerHTML = text
