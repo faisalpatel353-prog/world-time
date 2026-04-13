@@ -5,55 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body{
-margin:0;
-font-family:Arial;
-background:#0f172a;
-color:white;
-}
-
-.header{
-display:flex;
-justify-content:space-between;
-padding:15px;
-background:#111827;
-}
-
-.menu{
-cursor:pointer;
-font-size:22px;
-}
-
-.box{
-padding:15px;
-}
-
-input, select{
-width:100%;
-padding:10px;
-margin:8px 0;
-border-radius:6px;
-border:none;
-}
-
-.card{
-background:#1f2937;
-padding:12px;
-margin:10px 0;
-border-radius:8px;
-}
-
-.ads{
-background:#374151;
-text-align:center;
-padding:15px;
-margin:10px 0;
-}
-
-.country-list{
-max-height:200px;
-overflow-y:scroll;
-}
+body{margin:0;font-family:Arial;background:#0f172a;color:white}
+.header{display:flex;justify-content:space-between;padding:15px;background:#111827}
+.menu{cursor:pointer;font-size:22px}
+.box{padding:15px}
+input,select{width:100%;padding:10px;margin:8px 0;border-radius:6px;border:none}
+.card{background:#1f2937;padding:12px;margin:10px 0;border-radius:8px}
+.ads{background:#374151;text-align:center;padding:15px;margin:10px 0}
+.country-list{max-height:200px;overflow-y:scroll}
+.detail{background:#020617;padding:15px;margin-top:10px;border-radius:8px}
 </style>
 </head>
 
@@ -67,8 +27,9 @@ overflow-y:scroll;
 <div id="menuBox" style="display:none;padding:15px;background:#1f2937;">
 <h3>About Time</h3>
 <p>
-Time zones exist because Earth rotates. Different countries have different time
-based on longitude. India uses IST (UTC+5:30).
+Time zones exist because Earth rotates 360° in 24 hours. Every 15° = 1 hour difference.
+Countries adjust time based on longitude. India follows IST (UTC+5:30).
+Daylight Saving Time (DST) is used in some countries to save daylight.
 </p>
 </div>
 
@@ -77,16 +38,14 @@ based on longitude. India uses IST (UTC+5:30).
 <input type="text" id="search" placeholder="Search country..." onkeyup="filterCountry()">
 
 <select id="country1"></select>
-<select id="country2"></select>
 
-<div class="card" id="your"></div>
-<div class="card" id="c1"></div>
-<div class="card" id="c2"></div>
-<div class="card" id="diff"></div>
+<div class="card" id="time"></div>
 
 <div class="ads">Ad Space</div>
 
 <div class="country-list" id="list"></div>
+
+<div class="detail" id="detail"></div>
 
 </div>
 
@@ -96,50 +55,55 @@ let zones = Intl.supportedValuesOf('timeZone')
 
 function loadCountries(){
 let c1 = document.getElementById("country1")
-let c2 = document.getElementById("country2")
 let list = document.getElementById("list")
 
 zones.forEach(z=>{
 let name = z.replace("_"," ")
 
 c1.innerHTML += `<option value="${z}">${name}</option>`
-c2.innerHTML += `<option value="${z}">${name}</option>`
 
-list.innerHTML += `<div class="card">${name}</div>`
+list.innerHTML += `<div class="card" onclick="showDetail('${z}')">${name}</div>`
 })
 }
 
 let userZone = Intl.DateTimeFormat().resolvedOptions().timeZone
 
 function update(){
-let yourTime = new Date().toLocaleString("en-US",{timeZone:userZone})
-let z1 = document.getElementById("country1").value
-let z2 = document.getElementById("country2").value
+let zone = document.getElementById("country1").value
+let t = new Date().toLocaleString("en-US",{timeZone:zone})
+document.getElementById("time").innerHTML = "Current Time: "+t
+}
 
-let t1 = new Date().toLocaleString("en-US",{timeZone:z1})
-let t2 = new Date().toLocaleString("en-US",{timeZone:z2})
+function showDetail(zone){
+let now = new Date().toLocaleString("en-US",{timeZone:zone})
 
-document.getElementById("your").innerHTML = "Your Time: "+yourTime
-document.getElementById("c1").innerHTML = "Country 1: "+t1
-document.getElementById("c2").innerHTML = "Country 2: "+t2
+let job = "9 AM to 5 PM (approx)"
+let stock = "9:30 AM to 4 PM (local market)"
 
-let d1 = new Date(t1)
-let d2 = new Date(t2)
+if(zone.includes("India")){
+job = "9 AM to 6 PM"
+stock = "9:15 AM to 3:30 PM (NSE/BSE)"
+}
 
-let diff = (d2 - d1)/3600000
+if(zone.includes("New_York")){
+stock = "9:30 AM to 4 PM (NYSE)"
+}
 
-document.getElementById("diff").innerHTML =
-diff>0 ? diff.toFixed(1)+" hours ahead" :
-diff<0 ? Math.abs(diff).toFixed(1)+" hours behind" :
-"Same time"
+document.getElementById("detail").innerHTML = `
+<h3>${zone}</h3>
+<p><b>Current Time:</b> ${now}</p>
+<p><b>Time Zone:</b> ${zone}</p>
+<p><b>Corporate Job Timing:</b> ${job}</p>
+<p><b>Stock Market Timing:</b> ${stock}</p>
+`
 }
 
 function filterCountry(){
 let input = document.getElementById("search").value.toLowerCase()
-let options = document.querySelectorAll("option")
+let cards = document.querySelectorAll(".country-list .card")
 
-options.forEach(o=>{
-o.style.display = o.text.toLowerCase().includes(input) ? "" : "none"
+cards.forEach(c=>{
+c.style.display = c.innerText.toLowerCase().includes(input) ? "" : "none"
 })
 }
 
