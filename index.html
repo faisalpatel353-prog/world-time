@@ -1,168 +1,156 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>World Time Compare</title>
+<title>World Time Pro</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 body{
 margin:0;
 font-family:Arial;
-background: url('https://images.unsplash.com/photo-1502920917128-1aa500764cbd') no-repeat center center/cover;
-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
+background:#0f172a;
+color:white;
 }
 
-.overlay{
-background:rgba(0,0,0,0.6);
-position:absolute;
-width:100%;
-height:100%;
-top:0;
-left:0;
+.header{
+display:flex;
+justify-content:space-between;
+padding:15px;
+background:#111827;
+}
+
+.menu{
+cursor:pointer;
+font-size:22px;
 }
 
 .box{
-position:relative;
-z-index:2;
-background:rgba(255,255,255,0.1);
-backdrop-filter:blur(15px);
-padding:25px;
-border-radius:15px;
-width:350px;
-color:white;
-text-align:center;
-box-shadow:0 10px 30px rgba(0,0,0,0.5);
+padding:15px;
 }
 
-h2{
-margin-bottom:10px;
-}
-
-select,input{
-padding:10px;
+input, select{
 width:100%;
+padding:10px;
 margin:8px 0;
-border:none;
 border-radius:6px;
+border:none;
 }
 
-.time{
-margin:8px 0;
-padding:8px;
-background:rgba(255,255,255,0.2);
-border-radius:6px;
+.card{
+background:#1f2937;
+padding:12px;
+margin:10px 0;
+border-radius:8px;
+}
+
+.ads{
+background:#374151;
+text-align:center;
+padding:15px;
+margin:10px 0;
+}
+
+.country-list{
+max-height:200px;
+overflow-y:scroll;
 }
 </style>
 </head>
 
 <body>
 
-<div class="overlay"></div>
+<div class="header">
+<div>🌍 World Time Pro</div>
+<div class="menu" onclick="toggleMenu()">☰</div>
+</div>
+
+<div id="menuBox" style="display:none;padding:15px;background:#1f2937;">
+<h3>About Time</h3>
+<p>
+Time zones exist because Earth rotates. Different countries have different time
+based on longitude. India uses IST (UTC+5:30).
+</p>
+</div>
 
 <div class="box">
-<h2>🌍 World Time Compare</h2>
 
 <input type="text" id="search" placeholder="Search country..." onkeyup="filterCountry()">
 
-<select id="country">
+<select id="country1"></select>
+<select id="country2"></select>
 
-<option value="America/New_York">USA (New York)</option>
-<option value="America/Los_Angeles">USA (California)</option>
-<option value="Europe/London">UK</option>
-<option value="Europe/Paris">France</option>
-<option value="Europe/Berlin">Germany</option>
-<option value="Europe/Madrid">Spain</option>
-<option value="Europe/Rome">Italy</option>
-<option value="Asia/Kolkata">India</option>
-<option value="Asia/Dubai">Dubai</option>
-<option value="Asia/Karachi">Pakistan</option>
-<option value="Asia/Dhaka">Bangladesh</option>
-<option value="Asia/Singapore">Singapore</option>
-<option value="Asia/Tokyo">Japan</option>
-<option value="Asia/Shanghai">China</option>
-<option value="Asia/Seoul">South Korea</option>
-<option value="Asia/Bangkok">Thailand</option>
-<option value="Asia/Jakarta">Indonesia</option>
-<option value="Asia/Manila">Philippines</option>
-<option value="Asia/Kuala_Lumpur">Malaysia</option>
-<option value="Asia/Colombo">Sri Lanka</option>
-<option value="Asia/Kathmandu">Nepal</option>
-<option value="Europe/Moscow">Russia</option>
-<option value="Europe/Istanbul">Turkey</option>
-<option value="Europe/Amsterdam">Netherlands</option>
-<option value="Europe/Zurich">Switzerland</option>
-<option value="Europe/Stockholm">Sweden</option>
-<option value="Europe/Oslo">Norway</option>
-<option value="Europe/Helsinki">Finland</option>
-<option value="Europe/Athens">Greece</option>
-<option value="Africa/Cairo">Egypt</option>
-<option value="Africa/Johannesburg">South Africa</option>
-<option value="Africa/Nairobi">Kenya</option>
-<option value="America/Toronto">Canada</option>
-<option value="America/Vancouver">Canada Vancouver</option>
-<option value="America/Mexico_City">Mexico</option>
-<option value="America/Sao_Paulo">Brazil</option>
-<option value="America/Buenos_Aires">Argentina</option>
-<option value="Australia/Sydney">Australia</option>
-<option value="Australia/Melbourne">Australia Melbourne</option>
-<option value="Pacific/Auckland">New Zealand</option>
+<div class="card" id="your"></div>
+<div class="card" id="c1"></div>
+<div class="card" id="c2"></div>
+<div class="card" id="diff"></div>
 
-<!-- aur add kar sakte ho future me easily -->
+<div class="ads">Ad Space</div>
 
-</select>
-
-<div class="time" id="your"></div>
-<div class="time" id="other"></div>
-<div class="time" id="diff"></div>
+<div class="country-list" id="list"></div>
 
 </div>
 
 <script>
+
+let zones = Intl.supportedValuesOf('timeZone')
+
+function loadCountries(){
+let c1 = document.getElementById("country1")
+let c2 = document.getElementById("country2")
+let list = document.getElementById("list")
+
+zones.forEach(z=>{
+let name = z.replace("_"," ")
+
+c1.innerHTML += `<option value="${z}">${name}</option>`
+c2.innerHTML += `<option value="${z}">${name}</option>`
+
+list.innerHTML += `<div class="card">${name}</div>`
+})
+}
+
 let userZone = Intl.DateTimeFormat().resolvedOptions().timeZone
 
 function update(){
 let yourTime = new Date().toLocaleString("en-US",{timeZone:userZone})
-let country = document.getElementById("country").value
-let other = new Date().toLocaleString("en-US",{timeZone:country})
+let z1 = document.getElementById("country1").value
+let z2 = document.getElementById("country2").value
 
-document.getElementById("your").innerHTML = "🕒 Your Time: " + yourTime
-document.getElementById("other").innerHTML = "🌎 Other Time: " + other
+let t1 = new Date().toLocaleString("en-US",{timeZone:z1})
+let t2 = new Date().toLocaleString("en-US",{timeZone:z2})
 
-let y = new Date(yourTime)
-let o = new Date(other)
+document.getElementById("your").innerHTML = "Your Time: "+yourTime
+document.getElementById("c1").innerHTML = "Country 1: "+t1
+document.getElementById("c2").innerHTML = "Country 2: "+t2
 
-let diff = (o - y) / 3600000
+let d1 = new Date(t1)
+let d2 = new Date(t2)
 
-let text = ""
+let diff = (d2 - d1)/3600000
 
-if(diff > 0){
-text = "⏩ " + diff.toFixed(1) + " hours ahead of you"
+document.getElementById("diff").innerHTML =
+diff>0 ? diff.toFixed(1)+" hours ahead" :
+diff<0 ? Math.abs(diff).toFixed(1)+" hours behind" :
+"Same time"
 }
-else if(diff < 0){
-text = "⏪ " + Math.abs(diff).toFixed(1) + " hours behind you"
-}
-else{
-text = "⏺ Same time"
-}
-
-document.getElementById("diff").innerHTML = text
-}
-
-setInterval(update,1000)
 
 function filterCountry(){
 let input = document.getElementById("search").value.toLowerCase()
-let select = document.getElementById("country")
-let options = select.getElementsByTagName("option")
+let options = document.querySelectorAll("option")
 
-for(let i=0;i<options.length;i++){
-let txt = options[i].text.toLowerCase()
-options[i].style.display = txt.includes(input) ? "" : "none"
+options.forEach(o=>{
+o.style.display = o.text.toLowerCase().includes(input) ? "" : "none"
+})
 }
+
+function toggleMenu(){
+let m = document.getElementById("menuBox")
+m.style.display = m.style.display=="none"?"block":"none"
 }
+
+setInterval(update,1000)
+loadCountries()
+
 </script>
 
 </body>
