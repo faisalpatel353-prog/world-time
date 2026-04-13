@@ -3,6 +3,7 @@
 <head>
 <title>World Time Compare</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <style>
 body{
 font-family:Arial;
@@ -18,7 +19,7 @@ max-width:400px;
 margin:auto;
 box-shadow:0 0 10px rgba(0,0,0,0.1)
 }
-select{
+select, input{
 padding:10px;
 width:100%;
 margin:10px 0
@@ -26,9 +27,6 @@ margin:10px 0
 .time{
 font-size:18px;
 margin:8px 0
-}
-h2{
-margin-bottom:10px
 }
 </style>
 </head>
@@ -38,13 +36,16 @@ margin-bottom:10px
 <div class="box">
 <h2>World Time Compare</h2>
 
+<label>Search Country</label>
+<input type="text" id="search" placeholder="Type country name..." onkeyup="filterCountry()">
+
 <label>Select Country</label>
 <select id="country">
 <option value="America/New_York">USA (New York)</option>
 <option value="America/Los_Angeles">USA (California)</option>
 <option value="Europe/London">UK (London)</option>
-<option value="Europe/Paris">France (Paris)</option>
-<option value="Europe/Berlin">Germany (Berlin)</option>
+<option value="Europe/Paris">France</option>
+<option value="Europe/Berlin">Germany</option>
 <option value="Europe/Madrid">Spain</option>
 <option value="Europe/Rome">Italy</option>
 <option value="Asia/Dubai">Dubai</option>
@@ -78,21 +79,12 @@ margin-bottom:10px
 <script>
 function update(){
 
-let india = new Date().toLocaleString("en-US", {
-timeZone: "Asia/Kolkata"
-})
-
+let india = new Date().toLocaleString("en-US",{timeZone:"Asia/Kolkata"})
 let country = document.getElementById("country").value
+let other = new Date().toLocaleString("en-US",{timeZone:country})
 
-let other = new Date().toLocaleString("en-US", {
-timeZone: country
-})
-
-document.getElementById("india").innerHTML =
-"India Time: " + india
-
-document.getElementById("other").innerHTML =
-"Other Time: " + other
+document.getElementById("india").innerHTML = "India Time: " + india
+document.getElementById("other").innerHTML = "Other Time: " + other
 
 let i = new Date(india)
 let o = new Date(other)
@@ -115,6 +107,23 @@ document.getElementById("diff").innerHTML = text
 }
 
 setInterval(update,1000)
+
+// Search function
+function filterCountry(){
+let input = document.getElementById("search").value.toLowerCase()
+let select = document.getElementById("country")
+let options = select.getElementsByTagName("option")
+
+for(let i=0;i<options.length;i++){
+let txt = options[i].text.toLowerCase()
+if(txt.includes(input)){
+options[i].style.display = ""
+}
+else{
+options[i].style.display = "none"
+}
+}
+}
 </script>
 
 </body>
