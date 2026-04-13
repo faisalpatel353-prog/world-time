@@ -5,22 +5,66 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body{font-family:Arial;text-align:center;padding:20px;background:#f5f5f5}
-.box{background:white;padding:20px;border-radius:10px;max-width:400px;margin:auto;box-shadow:0 0 10px rgba(0,0,0,0.1)}
-select,input{padding:10px;width:100%;margin:10px 0}
-.time{font-size:18px;margin:8px 0}
+body{
+margin:0;
+font-family:Arial;
+background:linear-gradient(135deg,#667eea,#764ba2);
+color:white;
+text-align:center;
+padding:20px;
+}
+
+.box{
+background:rgba(255,255,255,0.1);
+backdrop-filter:blur(10px);
+padding:25px;
+border-radius:15px;
+max-width:400px;
+margin:auto;
+box-shadow:0 8px 25px rgba(0,0,0,0.3);
+}
+
+h2{
+margin-bottom:15px;
+}
+
+select,input{
+padding:12px;
+width:100%;
+margin:10px 0;
+border:none;
+border-radius:8px;
+font-size:14px;
+}
+
+input{
+background:white;
+color:black;
+}
+
+select{
+background:white;
+color:black;
+}
+
+.time{
+font-size:18px;
+margin:10px 0;
+padding:10px;
+background:rgba(255,255,255,0.15);
+border-radius:8px;
+}
+
 </style>
 </head>
 
 <body>
 
 <div class="box">
-<h2>World Time Compare</h2>
+<h2>🌍 World Time Compare</h2>
 
-<label>Search Country</label>
-<input type="text" id="search" placeholder="Type country..." onkeyup="filterCountry()">
+<input type="text" id="search" placeholder="Search country..." onkeyup="filterCountry()">
 
-<label>Select Country</label>
 <select id="country">
 <option value="America/New_York">USA</option>
 <option value="Europe/London">UK</option>
@@ -38,18 +82,15 @@ select,input{padding:10px;width:100%;margin:10px 0}
 </div>
 
 <script>
-
-// Detect user timezone
 let userZone = Intl.DateTimeFormat().resolvedOptions().timeZone
 
 function update(){
-
 let yourTime = new Date().toLocaleString("en-US",{timeZone:userZone})
 let country = document.getElementById("country").value
 let other = new Date().toLocaleString("en-US",{timeZone:country})
 
-document.getElementById("your").innerHTML = "Your Time: " + yourTime
-document.getElementById("other").innerHTML = "Other Time: " + other
+document.getElementById("your").innerHTML = "🕒 Your Time: " + yourTime
+document.getElementById("other").innerHTML = "🌎 Other Time: " + other
 
 let y = new Date(yourTime)
 let o = new Date(other)
@@ -59,13 +100,13 @@ let diff = (o - y) / 3600000
 let text = ""
 
 if(diff > 0){
-text = diff.toFixed(1) + " hours ahead of you"
+text = "⏩ " + diff.toFixed(1) + " hours ahead of you"
 }
 else if(diff < 0){
-text = Math.abs(diff).toFixed(1) + " hours behind you"
+text = "⏪ " + Math.abs(diff).toFixed(1) + " hours behind you"
 }
 else{
-text = "Same time"
+text = "⏺ Same time"
 }
 
 document.getElementById("diff").innerHTML = text
@@ -73,7 +114,6 @@ document.getElementById("diff").innerHTML = text
 
 setInterval(update,1000)
 
-// Search
 function filterCountry(){
 let input = document.getElementById("search").value.toLowerCase()
 let select = document.getElementById("country")
@@ -84,7 +124,6 @@ let txt = options[i].text.toLowerCase()
 options[i].style.display = txt.includes(input) ? "" : "none"
 }
 }
-
 </script>
 
 </body>
