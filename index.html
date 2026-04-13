@@ -4,16 +4,79 @@
 <title>World Time Pro</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<meta name="description" content="Compare world time zones, check global time, stock market timings and country details instantly.">
+
 <style>
-body{margin:0;font-family:Arial;background:#0f172a;color:white}
-.header{display:flex;justify-content:space-between;padding:15px;background:#111827}
-.menu{cursor:pointer;font-size:22px}
-.box{padding:15px}
-input,select{width:100%;padding:10px;margin:8px 0;border-radius:6px;border:none}
-.card{background:#1f2937;padding:12px;margin:10px 0;border-radius:8px}
-.ads{background:#374151;text-align:center;padding:15px;margin:10px 0}
-.country-list{max-height:200px;overflow-y:scroll}
-.detail{background:#020617;padding:15px;margin-top:10px;border-radius:8px}
+body{
+margin:0;
+font-family:Arial;
+background:#0f172a;
+color:white;
+}
+
+.header{
+display:flex;
+justify-content:space-between;
+padding:15px;
+background:#111827;
+font-weight:bold;
+}
+
+.menu{
+cursor:pointer;
+}
+
+.box{
+padding:15px;
+}
+
+input{
+width:100%;
+padding:10px;
+border-radius:6px;
+border:none;
+margin-bottom:10px;
+}
+
+.card{
+background:#1f2937;
+padding:12px;
+margin:10px 0;
+border-radius:10px;
+}
+
+.country{
+display:flex;
+align-items:center;
+gap:10px;
+cursor:pointer;
+}
+
+.flag{
+width:25px;
+height:18px;
+border-radius:3px;
+}
+
+.ads{
+background:#374151;
+text-align:center;
+padding:20px;
+margin:10px 0;
+border-radius:8px;
+}
+
+.country-list{
+max-height:250px;
+overflow-y:auto;
+}
+
+.detail{
+background:#020617;
+padding:15px;
+border-radius:10px;
+margin-top:10px;
+}
 </style>
 </head>
 
@@ -27,9 +90,10 @@ input,select{width:100%;padding:10px;margin:8px 0;border-radius:6px;border:none}
 <div id="menuBox" style="display:none;padding:15px;background:#1f2937;">
 <h3>About Time</h3>
 <p>
-Time zones exist because Earth rotates 360° in 24 hours. Every 15° = 1 hour difference.
-Countries adjust time based on longitude. India follows IST (UTC+5:30).
-Daylight Saving Time (DST) is used in some countries to save daylight.
+Earth rotates 360° in 24 hours → 15° = 1 hour.  
+Countries follow time zones based on longitude.  
+India = UTC+5:30.  
+Some countries use DST to adjust daylight.
 </p>
 </div>
 
@@ -37,11 +101,7 @@ Daylight Saving Time (DST) is used in some countries to save daylight.
 
 <input type="text" id="search" placeholder="Search country..." onkeyup="filterCountry()">
 
-<select id="country1"></select>
-
-<div class="card" id="time"></div>
-
-<div class="ads">Ad Space</div>
+<div class="ads">Ad Space (AdSense)</div>
 
 <div class="country-list" id="list"></div>
 
@@ -51,56 +111,47 @@ Daylight Saving Time (DST) is used in some countries to save daylight.
 
 <script>
 
-let zones = Intl.supportedValuesOf('timeZone')
+// country data (basic)
+let data = [
+{name:"India",zone:"Asia/Kolkata",flag:"in",job:"9-6",stock:"9:15-3:30 (NSE)"},
+{name:"USA (New York)",zone:"America/New_York",flag:"us",job:"9-5",stock:"9:30-4 (NYSE)"},
+{name:"UK",zone:"Europe/London",flag:"gb",job:"9-5",stock:"8-4:30 (LSE)"},
+{name:"Dubai",zone:"Asia/Dubai",flag:"ae",job:"9-6",stock:"10-3 (DFM)"},
+{name:"Japan",zone:"Asia/Tokyo",flag:"jp",job:"9-6",stock:"9-3 (TSE)"}
+]
 
-function loadCountries(){
-let c1 = document.getElementById("country1")
+// auto add more zones
+Intl.supportedValuesOf('timeZone').forEach(z=>{
+data.push({name:z.replace("_"," "),zone:z,flag:"us",job:"9-5",stock:"local market"})
+})
+
+function load(){
 let list = document.getElementById("list")
-
-zones.forEach(z=>{
-let name = z.replace("_"," ")
-
-c1.innerHTML += `<option value="${z}">${name}</option>`
-
-list.innerHTML += `<div class="card" onclick="showDetail('${z}')">${name}</div>`
+data.forEach(d=>{
+list.innerHTML += `
+<div class="card country" onclick="showDetail('${d.zone}')">
+<img class="flag" src="https://flagcdn.com/w40/${d.flag}.png">
+${d.name}
+</div>`
 })
 }
 
-let userZone = Intl.DateTimeFormat().resolvedOptions().timeZone
-
-function update(){
-let zone = document.getElementById("country1").value
-let t = new Date().toLocaleString("en-US",{timeZone:zone})
-document.getElementById("time").innerHTML = "Current Time: "+t
-}
-
 function showDetail(zone){
-let now = new Date().toLocaleString("en-US",{timeZone:zone})
-
-let job = "9 AM to 5 PM (approx)"
-let stock = "9:30 AM to 4 PM (local market)"
-
-if(zone.includes("India")){
-job = "9 AM to 6 PM"
-stock = "9:15 AM to 3:30 PM (NSE/BSE)"
-}
-
-if(zone.includes("New_York")){
-stock = "9:30 AM to 4 PM (NYSE)"
-}
+let d = data.find(x=>x.zone==zone)
+let time = new Date().toLocaleString("en-US",{timeZone:zone})
 
 document.getElementById("detail").innerHTML = `
-<h3>${zone}</h3>
-<p><b>Current Time:</b> ${now}</p>
-<p><b>Time Zone:</b> ${zone}</p>
-<p><b>Corporate Job Timing:</b> ${job}</p>
-<p><b>Stock Market Timing:</b> ${stock}</p>
+<h3>${d.name}</h3>
+<p><b>Current Time:</b> ${time}</p>
+<p><b>Timezone:</b> ${zone}</p>
+<p><b>Job Timing:</b> ${d.job}</p>
+<p><b>Stock Market:</b> ${d.stock}</p>
 `
 }
 
 function filterCountry(){
 let input = document.getElementById("search").value.toLowerCase()
-let cards = document.querySelectorAll(".country-list .card")
+let cards = document.querySelectorAll(".country")
 
 cards.forEach(c=>{
 c.style.display = c.innerText.toLowerCase().includes(input) ? "" : "none"
@@ -112,8 +163,7 @@ let m = document.getElementById("menuBox")
 m.style.display = m.style.display=="none"?"block":"none"
 }
 
-setInterval(update,1000)
-loadCountries()
+load()
 
 </script>
 
